@@ -190,6 +190,8 @@ president is giving his speech in an outdoor location with very different lighti
 and counter the limitation of having only one speaker. </p>
 <p>Lastly, the videos have clear and accurate captions provided that, when combined with other processing driven by the audio samples, serve to indicate reasonable estimates of frame 
 boundaries for individual words.  These can be verified via synchronization with the audio samples, and also can be fine tuned with speech recognition.</p>
+<p>All of the code required to process the source material and construct our dataset is included, except where otherwise specified (i.e. openFace for the face cropping transfomrations).  
+We implemented the majority of our scripts in MATLAB, except for the caption-to-frame mapping code which is an Eclipse Java project. </p>
 <div style="float: left; padding: 20px">
 <img src="images/twoWaysSameSample.jpg" width=210 height=105/>
 <p style="font-size: 12px">Figure 2. Two isolated face image samples,the left image using 
@@ -248,10 +250,10 @@ audio suggestion beyond a certain threshold would be ignored.  A clip of an exam
 
 https://www.dropbox.com/s/j728vxmkc158h3w/obamaCapSpeechCmp.avi?dl=0
 
-While this method was generally very successful in our random sampling and manual checking of the audio synchronization (which amounted to about 10% of the entire corpus), particularly with larger words,
-we realize that with smaller words the small window was often inacccurate by a few frames, due to cadence variation or just inaccurate assumptions.  When building our training data for the LSTM-based lipreader network, 
-this discrepency was mitigated somewhat by the mechanism we used to build the sequences upon which we trained the algorithm, as is discussed in Section 6.
-
+While this method was generally very successful in our random sampling and manual checking of the audio synchronization (with which we covered about 10% of the entire corpus), particularly with larger words,
+we realized that with smaller words the small window was often inacccurate by a few frames, as is evidenced in the video linked above, due to cadence variation or just inaccurate assumptions.  When building our training data for the LSTM-based lipreader network, 
+this discrepency was mitigated somewhat by the mechanism we used to build the sequences upon which we trained the algorithm, as is discussed in relation to building our training data in Section 6.2 .
+</p>
 <h3>5.Self Organizing Maps of Audio and Image data</h3>
 <p>
 
