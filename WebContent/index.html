@@ -13,7 +13,7 @@ body {
 	margin: 0px;
 	width: 100%;
 	font-family: 'Crimson Text', serif;
-	font-size: 20px;
+	font-size: 16px;
 	background: #fcfcfc;
 }
 h1 {
@@ -135,23 +135,34 @@ td img {
 </div>
 <div class="container">
 
-<h2>CS 7476 Final Project 1 : FaMACap dataset (Face&Mouth Image/Audio/Caption) and LSTM-based lipreader.</h2>
+<h2>CS 7476 Final Project 1 : OFaMACap dataset (Obama Face&Mouth Image/Audio/Caption) and LSTM-based lipreader.</h2>
 <div style="float: right; padding: 20px">
 <img src="images/out_011_xvid_2265.jpg" width=320 height=180/>
-<p style="font-size: 14px">Screen Capture from a presidential address.</p>
+<p style="font-size: 14px">Figure 1. Screen Capture from a presidential address.</p>
 </div>
 <h3>Abstract</h3>
-<p></p>
-
-<h3>Introduction</h3>
-<p>
-
-
-
-
+<p>We present a dataset of aligned images, audio samples, and captions built from the President Obama's weekly addresses 
+over the time period of 2009 to 2015, yielding a corpus of over 1.5 million samples and 205,000 conversationally spoken words.
+We also present the tools and methods we used to collect the data, with which a user can extract the same data from 
+videos with provided closed caption files.  Two pretrained 10,000 node Self-Organizing Maps are also included, one trained on half of the audio data samples and one
+trained on the mouth image samples, to be used to faciliate working with the high dimensional data.  Lastly, we present an
+LSTM-based network trained on our dataset to associate sequences of mouth motions to captions (lipreading) to demonstrate the set's utility.
 </p>
 
-<h3>Prior Work</h3>
+<h3>1.Introduction</h3>
+<p>There are many interesting problems in Computer Vision that depend upon more than a single image for a solution.  Beyond the inherent complexities of 
+recognition and classification commonly addressed in the field, with some tasks a single image doesn't present enough information, and instead sequences of images 
+are necessary to even attempt to decipher the desired result.</p>
+<p>One such problem is lipreading, the recognition of spoken words through interpreting the motions of the speaker's face.  This is difficult to accomplish using a purely
+instance-based classification mechanism, since, taking the english language for example, there are fewer unique mouth shapes a speaker will produce while speaking
+than there are unique units of sounds (called phonemes) that that speaker will be able to generate, rendering a one-to-one mapping between the two impossible.</p>
+<p>These kinds of problems add another dimension, literally, to the already high dimensional problem space inherent in Computer Vision tasks, and require specialized 
+algorithms that can learn sequential data, such as recurrent neural nets, to achieve useful results, along with specialized datasets by which these networks need to be trained.  This
+is a challenge we hope to help address with our dataset.</p>
+<p>We also present tools where similar data can be collected easily, as well as algorithms that can help the user analyze the collected data and use it in an efficient manner.</p>
+<p>Lastly, we demonstrate our dataset on an LSTM-based network, where a subset of our data is used to train the network to assign captions to sequences of mouth motions.  Similar 
+lipreaders have recently come to prominence, and we demonstrate some of the particular strengths of our dataset with the resuls.</p> 
+<h3>2.Related Work</h3>
 <p>
 
 (siddharth maybe list stuff here)
@@ -159,26 +170,103 @@ td img {
 
 </p>
 
-<h3>Contirbutions</h3>
+<h3>3.Contributions</h3>
 <p>Our contributions with this project are the following :</p>
 <ol>
-<li>item 1</li>
+<li>Dataset of 1.5 million samples of face-cropped and isolated mouth images, and related audio samples.</li>
+<li>Frame-aligned mapping of the spoken words derived from closed caption files and audio analysis.</li>
+<li>Methodology and Codebase to collect and process data from CC-anotated videos.</li>
+<li>Self Organizing Maps trained on audio and image data</li>
+<li>LSTM-based Lipreader</li>
 </ol>
-<h3>Dataset Details</h3>
-<p></p>
+<h3>4.Dataset Details and Methods</h3>
+<h4>4.1.Details</h4>
+<p>Our dataset differs from other similar datasets that we have found in numerous ways which we hope will serve to illustrate the utility we provide that was not previously available.  
+Unlike many datasets, our set is of a single speaker, President Barrack Obama.  While in many ways this could be perceived as a limitation, we hope that the fact that the data was 
+collected over a period of 7 years, in multiple environments, serves to mitigate this somewhat.  We also took some steps to help vary the data further, which we expand upon below.  
+</p><p>One of the strengths of our dataset is its diversity.  Over 8000 unique words are spoken over the course of our videos, over 3000 of which are spoken 5 or more times (which would yield at least 10 training examples using 
+horizontal-axis mirroring of the face images).  These words are spoken in a conversational manner, with sentences of varying cadence, and often indistinct boundaries between words, providing
+a more natural setting than a dataset built with the intention of training, for example, an Isolated Word Speech Recognizer.</p>
+<p>Another strength of our dataset is in the soure material itself.  The videos we used to collect the data is high definition with clear audio, so the quality of the individual image 
+frames and audio samples is very high.  On the other hand, there is a natural variance built into the data since each weekly address source video was recorded one at a time, over the 
+span of 7 years.  The lighting and ambient sound, while consistent within a particular video, vary from video to video in a manner that is we have not seen in similar datasets - often the
+president is giving his speech in an outdoor location with very different lighting, or in a loud environment like a manufacturing plant, all of which serves to vary the resultant data in a useful manner
+and counter the limitation of having only one speaker. </p>
+<p>Lastly, the videos have clear and accurate captions provided that, when combined with other processing driven by the audio samples, serve to indicate reasonable estimates of frame 
+boundaries for individual words.  These can be verified via synchronization with the audio samples, and also can be fine tuned with speech recognition.</p>
+<div style="float: left; padding: 20px">
+<img src="images/twoWaysSameSample.jpg" width=210 height=105/>
+<p style="font-size: 12px">Figure 2. Two isolated face image samples,the left image using 
+</br>the outer eyes and nose as fixed points, the right using the inner
+</br>eyes and bottom lip, of the same spoken word from two
+</br>different videos.</p>
+</div>
+<h4>4.2.Image Processing</h4>
+<p>To build our dataset we acquired 310 videos of President Obama giving weekly State of the Union addresses, over the period of time from 2009 to 2015, which amounted to over 30 hours of video.  
+We sampled these videos to get individual frame images and the assocated audio samples of what the president was saying, and then transformed and face-cropped the images using the openFace library.  To accomplish this we chose two sets of different
+desired fixed points on the faces (the outside points of the eyes and the nose, and the inside points of the eyes and the lower lip) which were then used to provide a basis to transform the face
+image as the speaker's head moved around while speaking.  We used each set of fixed points on half of the image data, in an effort to help expand the diversity of the samples otherwise limited
+by the fact that they are generated by the same speaker, since each set of fixed points gives different mouth image results for the same word, as is seen in Figure 2.  Each cropped face image in our dataset is 96 x 96 pixels of RGB data, and we also provide
+40 x 40 gray scale images of the isolated mouth.</p>
 
-<h3>LSTM-based Learning</h3>
-<p></p>
+<h4>4.3.Caption Processing</h4>
+<p>Each source video included full transcriptions of the president's speech given in the .vtt closed caption format, which includes the time stamp offset from the beginning of the video
+determining when a set of words is to be displayed.  Using the assumption that the captions are displayed very close to when the words are spoken, which is a reasonable assumption since 
+these videos are not live and are therefore not generating the captions via speech recognition, we developed an algorithm to estimate the frame bounds of each word.
 
-<h3>Results</h3>
-<p></p>
+</p>
 
+<pre><code>%Closed Caption Example
+    %This is an example of the .vtt file for a passage of spoken 
+    %words from a video, including when these words are to be displayed.
+    %(hr:min:sec:ms) --> (hr:min:sec:ms)
+    
+		00:01:11.400 --> 00:01:13.900
+		Now we have to build
+		on this progress.
+		
+		00:01:13.900 --> 00:01:16.667
+		Congress should give every
+		American the chance to refinance
+		
+		00:01:16.667 --> 00:01:19.100
+		at today's low rates.
+		
+		00:01:19.100 --> 00:01:20.967
+		We should help more qualified
+		families get a mortgage
+		
+		00:01:20.967 --> 00:01:23.166
+		and buy their first home.
+</code></pre>
 
-<h3>Conclusions</h3>
-<p></p>
+<h3>5.Self Organizing Maps of Audio and Image data</h3>
+<p>
+
+</p>
+<h3>6.LSTM-based Learning</h3>
+<p>
+<h4>6.1.Constructing Training Data</h4>
+<p>
+</p>
+<h4>6.2.Models</h4>
+<p>
+</p>
+
+<h3>7.Results</h3>
+<p>
+</p>
+<h3>8.Future Work</h3>
+<p>
+</p>
 
 <h3>References</h3>
-<p></p>
+<p>
+
+
+
+
+</p>
 
 
 
@@ -192,18 +280,11 @@ td img {
 
 <h3>Image Table Example</h3>
 <table border=1>
-	<tr><td>Blurry Dog : Dog Filter STD : 5</td><td>Blurry Birdie : Tweety Filter STD : 6 </td></tr>
+	<tr><td>Example image table 1</td><td>Example  image table 2</td></tr>
 	<tr>
 		<td><img src="images/LowFreq_ImgNum_1.jpg" width="48%"/></td>
 		<td><img src="images/LowFreq_ImgNum_2.jpg" width="48%"/></td>
 	</tr>
-	<tr><td>Blurry Sub : Sub Filter STD : 5 </td><td>Blurry Motorcycle : Motorcycle Filter STD : 8 </td></tr>
-	<tr>
-		<td><img src="images/LowFreq_ImgNum_3.jpg" width="48%"/></td>
-		<td><img src="images/LowFreq_ImgNum_4.jpg" width="48%"/></td>
-	</tr>
-	<tr><td>Blurry Albert : Albert Filter STD : 3</td><td></td></tr>
-	<tr><td><img src="images/LowFreq_ImgNum_5.jpg" width="48%"/></td><td></td></tr>
 </table>
 
 
