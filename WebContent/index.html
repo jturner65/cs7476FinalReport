@@ -246,7 +246,7 @@ we would estimate that "My" would display for 3 frames (100-103), "Fellow" would
 <p>We augmented this estimate by analyzin the audio data.  By taking the RMS power of each frame's sample audio, we searched for values below a certain threshold and used 
 them as suggestions of word breaks, as is shown in Figure 3.  We chose the threshold so that we would find more word breaks than there were words spoken in the video to be sure we would find all of them. </p>
 <p>Taking these suggestions we would then find the nearest audio-derived word breaks to each audio frame break suggested by the caption data and adjust the caption-derived break accordingly, with the caveat that any
-audio suggestion beyond a certain threshold would be ignored.  A clip of an example of our results can be found here : 
+audio suggestion beyond a certain threshold would be ignored.  A clip of an example of the bounds for some words yielded by our results can be found here : 
 
 https://www.dropbox.com/s/j728vxmkc158h3w/obamaCapSpeechCmp.avi?dl=0
 
@@ -256,10 +256,20 @@ this discrepency was mitigated somewhat by the mechanism we used to build the fi
 to building our training data in Section 5.2.
 </p>
 <h4>4.4.Self Organizing Maps of Audio and Image data</h4>
-<p>Self Organizing Maps are networks of perceptrons where each node has a weight corresponding to a feature of the training data.  The 
-
-(john list stuff here - do we want this?)
-
+<p>Self Organizing Maps are networks of perceptrons where each node has a weight corresponding to a feature of the training data, which are initially randomly weighted.  A training example is then 
+mapped to the node whose weights most closely match its own feature values, and all the surrounding nodes within the current neighborhood (which decays in size over time) are modified to "look"
+more like the mapped node.  Then, another example is mapped to a node, and the process is repeated.  Once the entire batch of training examples is mapped, the neighborhood of impact decays and the
+mapping process is repeated with the now smaller neighborhood.</p>
+<p>A SOM will yield a reasonable low-dimensional representation of high dimensional data, and is often used to visualize high dimensional data or as a dimensionality reduction mechanism
+where high dimensional data might have a low number of principal components.  It can be used as a clustering algorithm in that it naturally maps similar examples to nearby nodes, without any required a-priori knowledge or choice of cluster size.  
+The nature of how it is trained preserves a continuous topology among each weight/feature [4.4.1], enabling data-point generation through interpolation of node weights.</p>
+<p>We chose to build SOMs on our audio and image data to not only reduce their dimension but also to potentially be used to generate data examples.  For example, since the images of the various mouth configurations recorded are synchronized with each audio sample,
+we have a natural mapping from the SOM of visual mouth mappings to the SOM of audio samples generated.  An input image of a mouth shape could then be mapped to a location on the image SOM, and the nearest surrounding nodes could 
+then be used to provide interpolants of their corresponding nodes in the Audio Data SOM, yielding an audio sample result.</p>
+<p>Our SOM implementation was achieved using the <a href="https://github.com/peterwittek/somoclu">SOMOCLU library</a> which is optimized for both openMPI-based cluster and 
+GPU-based computing.  We built a 10,000 node SOM for both the audio data and the image data, and trained both of them on the first 90 videos worth of our image dataset.  While no sequence data was recorded in the mappings, limiting their 
+usefulness for sequence learning, the decrease in dimensionality of the data, particularly for the images, implies the potential of longer training sequences while negatively impacting the training time, and experiments using this representation
+of our data in this capacity are ongoing.  Both SOM maps are provided in along with our dataset repository.
 </p>
 
 <h3>5.LSTM-based Learning</h3>
@@ -303,10 +313,13 @@ worked well, it was not perfect, and a well trained speech recognizer would undo
 given our word suggestions and frame estimations.</p>
 <p>Another desireable expansion would be augmenting the dataset with more speakers.  Many news programs and talkshows are available on youtube where an individual speaker is featured, face isolated and professionally recorded.  Using the
 collection methods and code we have accumulated it would not be difficult to process these clips in a similar manner and expand the dataset to cover other speakers.</p>
-
+<p>The nature of the SOM-based models and their potential as generative tools is intriguing.  It would be interesting to explore the extent by which a SOM representation of the data can embed 
+the essential nature of the source material required for successful sequence learning, which could prove a promising mechanism to more quickly and efficiently train algorithms on sequences.</p>
 <h3>References</h3>
 <p>
-//cite SOM
+//build citations as chapter.para.cite # ?
+
+[4.4.1] "Learning from Data: Concepts, Theory, and Methods", By Vladimir Cherkassky, Filip M. Mulier
 
 (siddharth list stuff here)
 
