@@ -21,8 +21,6 @@ h1 {
 	font-weight: normal;
 	font-size: 28px;
 	margin: 25px 0px 0px 0px;
-	text-transform: lowercase;
-
 }
 
 h2 {
@@ -135,7 +133,7 @@ td img {
 </div>
 <div class="container">
 
-<h2>CS 7476 Final Project 1 : OFaMACap dataset (Obama Face&Mouth Image/Audio/Caption) and LSTM-based lipreader.</h2>
+<h2>CS 7476 Final Project : O'FaMACap dataset (Obama Face&Mouth Image/Audio/Caption) and LSTM-based lipreader.</h2>
 <div style="float: right; padding: 20px">
 <img src="images/out_011_xvid_2265.jpg" width=320 height=180/>
 <p style="font-size: 14px">Figure 1. Screen Capture from a presidential address.</p>
@@ -148,7 +146,6 @@ videos with provided closed caption files.  Two pretrained 10,000 node Self-Orga
 trained on the mouth image samples, to be used to faciliate working with the high dimensional data.  Lastly, we present an
 LSTM-based network trained on our dataset to associate sequences of mouth motions to captions (lipreading) to demonstrate the set's utility.
 </p>
-
 <h3>1.Introduction</h3>
 <p>There are many interesting problems in Computer Vision that depend upon more than a single image for a solution.  Beyond the inherent complexities of 
 recognition and classification commonly addressed in the field, with some tasks a single image doesn't present enough information, and instead sequences of images 
@@ -165,11 +162,10 @@ lipreaders have recently come to prominence, and we demonstrate some of the part
 <h3>2.Related Work</h3>
 <p>
 
-(siddharth maybe list stuff here)
+(siddharth list stuff here)
 
 
 </p>
-
 <h3>3.Contributions</h3>
 <p>Our contributions with this project are the following :</p>
 <ol>
@@ -256,44 +252,59 @@ While this method was generally very successful in our random sampling and manua
 we realize that with smaller words the small window was often inacccurate by a few frames, due to cadence variation or just inaccurate assumptions.  When building our training data for the LSTM-based lipreader network, 
 this discrepency was mitigated somewhat by the mechanism we used to build the sequences upon which we trained the algorithm, as is discussed in Section 6.
 
-
 <h3>5.Self Organizing Maps of Audio and Image data</h3>
 <p>
+
+(john list stuff here - do we want this?)
 
 </p>
 
 <h3>6.LSTM-based Learning</h3>
-<h4>6.1.LSTM's</h4>
-<p></p>
+<h4>6.1.Long Short-Term Memory</h4>
+<p>
+(siddharth and john list stuff here)
+
+
+</p>
 <h4>6.2.Constructing Training Data</h4>
 <p>For the training data we used in to train the LSTM lipreader, we chose a subset of our word data consisting of 33 words of high frequency of occurence (at least 300 occurences each).  
 We isolated the image frames of each occurence in 3-dimensional MATLAB matrices where each column was an image of the cropped grayscale mouth (1600 pixels), each row denoted a particular pixel in this image, and each page denoted a particular
 training example.  We built a similar 3-dimensional matrix for our labels, where each word was represented by a 
 1-hot vector corresponding to the sequence being classified.  This process was automated, and the code to do this is included, so that
 all that is required is a csv file of the desired words fed to the java program that also generates caption frame estimates.  
-The resultant file "training_DataNumericDict.csv" is then used by the MATLAB script "testTrainingDataLoad.m" to generate the training data.
-</p>
+The resultant file "training_DataNumericDict.csv" is then used by the MATLAB script "testTrainingDataLoad.m" to generate the training data.</p>
+<p>Since we used a fixed sequence length across all words, we had to pad or truncate our training data based on the length of a particular word in samples compared to our chosen sequence length, which was 25 frames.  To process 
+each word, first we aligned the word's frames to be centered in the sequence map.  Then, if the word was too long, we clipped frames from the edges, favoring ending frames for an odd number of overflow frames.</p>
+<p>If the word was shorter than the sequence, we would add extra frames sufficient to cover half of the existing margin, and then fill the rest of the space with empty frames.  So, for example, if a word was 5 frames long, we would add
+5 frames of source material both before and after the word, and then add the rest as silence.  This also helped with mis-alignment with very small words, since given the sequence length of 25 
+frames (approximately a second) we held great confidence that even our imperfect frame estimates would be sufficient coupled with this buffer of source material (which was larger for the smaller words most likely to be misaligned) 
+to find the word in the source material.</p>
+
 <h4>6.3.Models</h4>
 <p>
 
+(siddharth list stuff here)
 
 </p>
 
 <h3>7.Results</h3>
 <p>
 
+(siddharth list stuff here)
 
 </p>
 <h3>8.Future Work</h3>
 <p>For future work, there are numerous expansions to our dataset we would like to implement to more accurately present the data we have, as well as to expand our corpus.</p>
 <p>One component we would like to implement would be a speech recognition engine to more cleanly specify frame-based word boundaries in the image/audio data.  While our estimation method
 worked well, it was not perfect, and a well trained speech recognizer would undoubtedly be able to quickly isolate the appropriate frames for each word in the corpus.  This task is made even easier
-given our word suggestions and frame estimations.
+given our word suggestions and frame estimations.</p>
+<p>Another desireable expansion would be augmenting the dataset with more speakers.  Many news programs and talkshows are available on youtube where an individual speaker is featured, face isolated and professionally recorded.  Using the
+collection methods and code we have accumulated it would not be difficult to process these clips in a similar manner and expand the dataset to cover other speakers.</p>
 
 
 <h3>References</h3>
 <p>
-
+//cite SOM
 
 
 
