@@ -269,16 +269,16 @@ then be used to provide interpolants of their corresponding nodes in the Audio D
 <p>Our SOM implementation was achieved using the <a href="https://github.com/peterwittek/somoclu">SOMOCLU library</a> which is optimized for both openMPI-based cluster and 
 GPU-based computing.  We built a 10,000 node SOM for both the audio data and the image data, and trained both of them on the first 90 videos worth of our image dataset.  While no sequence data was recorded in the mappings, limiting their 
 usefulness for sequence learning, the decrease in dimensionality of the data, particularly for the images, implies the potential of longer training sequences while negatively impacting the training time, and experiments using this representation
-of our data in this capacity are ongoing.  Both SOM maps are provided in along with our dataset repository.
+of our data in this capacity are ongoing.  Both SOM maps are provided along with our dataset repository.
 </p>
-
 <h3>5.LSTM-based Learning</h3>
-<h4>5.1.Long Short-Term Memory</h4>
+<h4>5.1.RNNs and Long Short-Term Memory</h4>
 <p>
 
-(siddharth and john list stuff here)
+(siddharth stuff here)
 
 </p>
+
 <h4>5.2.Constructing Training Data</h4>
 <p>For the training data we used in to train the LSTM lipreader, we chose a subset of our word data consisting of 33 words of high frequency of occurence (at least 300 occurences each).  
 We isolated the image frames of each occurence in 3-dimensional MATLAB matrices where each column was an image of the cropped grayscale mouth (1600 pixels), each row denoted a particular pixel in this image, and each page denoted a particular
@@ -293,15 +293,17 @@ each word, first we aligned the word's frames to be centered in the sequence map
 frames (approximately a second) we held great confidence that even our imperfect frame estimates would be sufficient coupled with this buffer of source material (which was larger for the smaller words most likely to be misaligned) 
 to find the word in the source material.</p>
 
-<h4>5.3.Models</h4>
+<h4>5.3.Models and Implementation</h4>
 <p>
 
 (siddharth list stuff here)
 
 </p>
 
-<h3>6.Results</h3>
-<p>
+<h3>6.Results and Discussion</h3>
+<p>The results we saw when training the models on our dataset, while substantially better than random, were not as good as similar results seen by similarly constructed models, 
+such as those reported in [6.1]. This could be attributed to the noisy nature of our training data, which is by design.  We do not present a dataset of isolated individual words, 
+such as the GRID corpus [6.2] used by [6.1], but rather words being used in conversational speaking.  
 
 (siddharth and john list stuff here)
 
@@ -319,33 +321,16 @@ the essential nature of the source material required for successful sequence lea
 <p>
 //build citations as chapter.para.cite # ?
 
-[4.4.1] "Learning from Data: Concepts, Theory, and Methods", By Vladimir Cherkassky, Filip M. Mulier
+<br>[4.4.1] "Learning from Data: Concepts, Theory, and Methods", by Vladimir Cherkassky, Filip M. Mulier
 
-(siddharth list stuff here)
+<br>[6.1] "Lipreading with Long Short-Term Memory", by Michael Wand, Jan Koutnik, Jurgen Schmidhuber, 2016
+<br>[6.2] “An Audio-Visual Corpus for Speech Perception and Automatic Speech Recognition,” M. Cooke, J. Barker, S. Cunningham, and X. Shao, 2006
+<br>
+
+(siddharth add stuff here)
 
 
 </p>
-
-
-
-<pre><code>%Code Example
-    %Code Comment
-    Code
-</code></pre>
-
-
-
-
-<h3>Image Table Example</h3>
-<table border=1>
-	<tr><td>Example image table 1</td><td>Example  image table 2</td></tr>
-	<tr>
-		<td><img src="images/LowFreq_ImgNum_1.jpg" width="48%"/></td>
-		<td><img src="images/LowFreq_ImgNum_2.jpg" width="48%"/></td>
-	</tr>
-</table>
-
-
 
 <div style="clear:both" >
 <p></p>
