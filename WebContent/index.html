@@ -274,12 +274,23 @@ of our data in this capacity are ongoing.  Both SOM maps are provided along with
 <h3>5. LSTM-based Learning</h3>
 <h4>5.1. RNNs and Long Short-Term Memory</h4>
 <p>
-The use of Recurrent Networks to allow a sequence of input vectors to be considered at any given time for training. ConvNets suffer from a huge limitation in that they operate over a fixed input size and produce a fixed sized output in return and don't have the ability to work on sequence of input vectors. This makes RNNs the default network architectures in the neural network world to try and model inputs that have a temporal aspect to them. The case of lip reading too requires us to work on a sequence on input frames and have the model predict an output class.</p>
+The use of Recurrent Networks to allow a sequence of input vectors to be considered at any given time for training. ConvNets 
+suffer from a huge limitation in that they operate over a fixed input size and produce a fixed sized output in return and 
+don't have the ability to work on sequence of input vectors. This makes RNNs the default network architectures in the neural 
+network world to try and model inputs that have a temporal aspect to them. The case of lip reading too requires us to work on 
+a sequence on input frames and have the model predict an output class.</p>
 <p>
-LSTMs have worked very well in the recent past on problems that involve sequential inputs such as speech recognition [9]. LSTMs are a much more powerful version of RNNs due to their ability to overcome the vanishing gradient problem which allows significant events to affect the hidden weights of the network over a longer sequence of inputs [10]. LSTMs are useful in this context because we are looking at sequence length that typical RNNs do not have the capability to handle. Given the larger memory of LSTMs, it is more useful for our use case.</p>
-<img src="lstm.png" width="600px"/>
+LSTMs have worked very well in the recent past on problems that involve sequential inputs such as speech recognition [9]. 
+LSTMs are a much more powerful version of RNNs due to their ability to overcome the vanishing gradient problem which allows 
+significant events to affect the hidden weights of the network over a longer sequence of inputs [10]. LSTMs are useful in this 
+context because we are looking at sequence length that typical RNNs do not have the capability to handle. Given the larger memory of 
+LSTMs, it is more useful for our use case.</p>
+<img src="images/lstm.png" width="600px"/>
 <p>Fig: Repeating LSTM modules</p>
-<p>What's different in the LSTM (as shown in the figure above) is the presence of memory cells which allow inputs events in longer sequences to be held in the 'memory'. The cell state from these memory cells affects the way in which the hidden units of the LSTM are updated. These memory units have what are called 'gates' which can control the flow of gradients and can also allow for operation such as resetting the memory as and when required. </p>
+<p>What's different in the LSTM (as shown in the figure above) is the presence of memory cells which allow inputs events in 
+longer sequences to be held in the 'memory'. The cell state from these memory cells affects the way in which the hidden units 
+of the LSTM are updated. These memory units have what are called 'gates' which can control the flow of gradients and can also 
+allow for operation such as resetting the memory as and when required. </p>
 
 <h4>5.2. Constructing Training Data</h4>
 <p>For the training data we used in to train the LSTM lipreader, we chose a subset of our word data consisting of 33 words of high frequency of occurance (at least 300 occurances each).  
@@ -288,11 +299,16 @@ training example.  We built a similar 3-dimensional matrix for our labels, where
 1-hot vector corresponding to the sequence being classified.  This process was automated, and the code to do this is included, so that
 all that is required is a csv file of the desired words fed to the java program that also generates caption frame estimates.  
 The resultant file "training_DataNumericDict.csv" is then used by the MATLAB script "testTrainingDataLoad.m" to generate the training data.</p>
-<p>Since we used a fixed sequence length across all words, we had to pad or truncate our training data based on the length of a particular word in samples compared to our chosen sequence length, which was 25 frames.  To process 
-each word, first we aligned the word's frames to be centered in the sequence map.  Then, if the word was too long, we clipped frames from the edges, favoring ending frames for an odd number of overflow frames.</p>
-<p>If the word was shorter than the sequence, we would add extra frames sufficient to cover half of the existing margin, and then fill the rest of the space with empty frames.  So, for example, if a word was 5 frames long, we would add
-5 frames of source material both before and after the word, and then add the rest as silence.  This also helped with mis-alignment with very small words, since given the sequence length of 25 
-frames (approximately a second) we held great confidence that even our imperfect frame estimates would be sufficient coupled with this buffer of source material (which was larger for the smaller words most likely to be misaligned) 
+<p>Since we used a fixed sequence length across all words, we had to pad or truncate our training data based on the length of a particular word in samples compared 
+to our chosen sequence length, which was 25 frames.  To process 
+each word, first we aligned the word's frames to be centered in the sequence map.  Then, if the word was too long, we clipped frames from the edges, favoring ending 
+frames for an odd number of overflow frames.</p>
+<p>If the word was shorter than the sequence, we would add extra frames sufficient to cover half of the existing margin, and then fill the rest of the space with 
+empty frames.  So, for example, if a word was 5 frames long, we would add
+5 frames of source material both before and after the word, and then add the rest as silence.  This also helped with mis-alignment with very small words, since 
+given the sequence length of 25 
+frames (approximately a second) we held great confidence that even our imperfect frame estimates would be sufficient coupled with this buffer of source material 
+(which was larger for the smaller words most likely to be misaligned) 
 to find the word in the source material.</p>
 
 <h4>5.3. Models and Implementation</h4>
@@ -304,11 +320,14 @@ Our implementation uses a vanilla LSTM model with any modifications to the input
 
 <h3>6. Results and Discussion</h3>
 <p>The results we saw when training the models on our dataset, while substantially better than random, were not as good as similar results seen by similarly constructed models, 
-such as those reported in [6]. This could be attributed to the noisy nature of our training data, which is by design.  As mentioned earleir, we do not present a dataset of isolated individual words, such as the GRID corpus [13] used by [6], but rather words being used in conversational speaking.  
+such as those reported in [6]. This could be attributed to the noisy nature of our training data, which is by design.  As mentioned earleir, we do not present a dataset of 
+isolated individual words, such as the GRID corpus [13] used by [6], but rather words being used in conversational speaking.  
 </p>
-<p>This rather un-curated nature of our dataset does make it difficult for us to train reliably due to the high level of noise in the data. In the model that we ran, we performed a 33-way classification where each class corresponded to a word. Our results varied between 25% - 30% for a 2 layer LSTM model which was run for about 200 epochs. The single layer LSTM model performed worse with about 20% accuracy. Random chance for this problem is at 3%. Unfortunately after running for about 200 epochs we did not see any convergence between the training and the testing curves. Once reason for this, we think, is that there is a poor correspondence between the order in which the classes are encountered by the model from the training and the test batches.</p>
-
-
+<p>This rather un-curated nature of our dataset does make it difficult for us to train reliably due to the high level of noise in the data. In the model that we ran, 
+we performed a 33-way classification where each class corresponded to a word. Our results varied between 25% - 30% for a 2 layer LSTM model which was run for about 
+200 epochs. The single layer LSTM model performed worse with about 20% accuracy. Random chance for this problem is at 3%. Unfortunately after running for about 200 
+epochs we did not see any convergence between the training and the testing curves. Once reason for this, we think, is that there is a poor correspondence between 
+the order in which the classes are encountered by the model from the training and the test batches.</p>
 <h3>7. Future Work</h3>
 <p>For future work, there are numerous expansions to our dataset we would like to implement to more accurately present the data we have, as well as to expand our corpus.</p>
 <p>One component we would like to implement would be a speech recognition engine to more cleanly specify frame-based word boundaries in the image/audio data.  While our estimation method
@@ -318,6 +337,10 @@ given our word suggestions and frame estimations.</p>
 collection methods and code we have accumulated it would not be difficult to process these clips in a similar manner and expand the dataset to cover other speakers.</p>
 <p>The nature of the SOM-based models and their potential as generative tools is intriguing.  It would be interesting to explore the extent by which a SOM representation of the data can embed 
 the essential nature of the source material required for successful sequence learning, which could prove a promising mechanism to more quickly and efficiently train algorithms on sequences.</p>
+<br>
+<p>All the data used in our project can be found here : <a href="https://www.dropbox.com/sh/21m2byeocbbl2wg/AACPePzQlU-YOcOzKy7W6Rwpa?dl=0">Dropbox repository of dataset.</a>
+<p>All the code used in our project can be found here : <a href="https://github.com/jturner65/LSTM_Lipreader">Githup repository of MATLAB and Java code.</a>
+
 <h3>References</h3>
 <p>
 //build citations as chapter.para.cite # ?
