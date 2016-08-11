@@ -13,7 +13,7 @@ body {
 	margin: 0px;
 	width: 100%;
 	font-family: 'Crimson Text', serif;
-	font-size: 16px;
+	font-size: 18px;
 	background: #fcfcfc;
 }
 h1 {
@@ -248,7 +248,7 @@ them as suggestions of word breaks, as is shown in Figure 3.  We chose the thres
 <p>Taking these suggestions we would then find the nearest audio-derived word breaks to each audio frame break suggested by the caption data and adjust the caption-derived break accordingly, with the caveat that any
 audio suggestion beyond a certain threshold would be ignored.  A clip of an example of the bounds for some words yielded by our results can be found here : 
 
-https://www.dropbox.com/s/j728vxmkc158h3w/obamaCapSpeechCmp.avi?dl=0
+<a href="https://www.dropbox.com/s/j728vxmkc158h3w/obamaCapSpeechCmp.avi?dl=0">Example Of Isolated Words</a>
 
 While this method was generally very successful in our random sampling and manual checking of the audio synchronization (with which we covered about 10% of the entire corpus), particularly with larger words,
 we realized that with smaller words the small window was often inaccurate by a few frames, as is evidenced in the video linked above, due to cadence variation or just inaccurate assumptions.  When building our training data for the LSTM-based lipreader network, 
@@ -343,7 +343,6 @@ the essential nature of the source material required for successful sequence lea
 
 <h3>References</h3>
 <p>
-//build citations as chapter.para.cite # ?
 <br>
 [1] 	Potamianos, G., Neti, C., Gravier, G., Garg, A., & Senior, A. W. (2003). Recent advances in the automatic recognition of audiovisual speech. Proceedings of the IEEE, 91(9), 1306-1326.
 <br>
